@@ -8,6 +8,7 @@ import com.andersenlab.backbasetesttask.service.IMDbFilmService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -26,7 +27,9 @@ public class IMDbFilmServiceImpl implements IMDbFilmService {
 
     public static final String APIKEY_PARAM = "apikey";
     public static final String TITLE_PARAM = "t";
-    private final String BASE_URL = "http://www.omdbapi.com/";
+
+    @Value("${omdb.api.url:}")
+    private String baseUrl;
 
     private final HttpClient client;
     private final ObjectMapper mapper;
@@ -35,7 +38,7 @@ public class IMDbFilmServiceImpl implements IMDbFilmService {
     @Override
     public IMDbFilmModel findFilm(String apiKey, String title) {
         String url = UriComponentsBuilder
-                .fromHttpUrl(BASE_URL)
+                .fromHttpUrl(baseUrl)
                 .queryParam(APIKEY_PARAM, apiKey)
                 .queryParam(TITLE_PARAM, title)
                 .toUriString();
