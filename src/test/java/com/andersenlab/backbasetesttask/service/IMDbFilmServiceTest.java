@@ -6,25 +6,19 @@ import com.andersenlab.backbasetesttask.model.dto.IMDbFilmDto;
 import com.andersenlab.backbasetesttask.service.impl.IMDbFilmServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.net.ssl.SSLSession;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.net.URI;
 import java.net.http.HttpClient;
-import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Optional;
 
 import static com.andersenlab.backbasetesttask.helper.TestHelper.API_KEY_TEST;
 import static com.andersenlab.backbasetesttask.helper.TestHelper.BODY;
@@ -35,12 +29,12 @@ import static com.andersenlab.backbasetesttask.helper.TestHelper.PLOT;
 import static com.andersenlab.backbasetesttask.helper.TestHelper.POSTER;
 import static com.andersenlab.backbasetesttask.helper.TestHelper.TITLE;
 import static com.andersenlab.backbasetesttask.helper.TestHelper.YEAR;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@TestPropertySource(properties = {"omdb.api.url=http://www.omdbapi.com/"})
 class IMDbFilmServiceTest {
 
     @Mock
@@ -54,6 +48,11 @@ class IMDbFilmServiceTest {
 
     @InjectMocks
     private IMDbFilmServiceImpl imDbFilmService;
+
+    @BeforeEach
+    public void setUp() {
+        ReflectionTestUtils.setField(imDbFilmService, "baseUrl", "http://www.omdbapi.com/");
+    }
 
     @Test
     void findFilmPositive() throws IOException, InterruptedException {
